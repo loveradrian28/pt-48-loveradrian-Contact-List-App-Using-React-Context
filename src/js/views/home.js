@@ -1,15 +1,44 @@
-import React from "react";
-import rigoImage from "../../img/rigo-baby.jpg";
+import React, { useState, useEffect, useContext } from "react";
 import "../../styles/home.css";
+import { Context } from "../store/appContext";
+import { Link, useNavigate } from "react-router-dom";
 
-export const Home = () => (
-	<div className="text-center mt-5">
-		<h1>Hello Rigo!</h1>
-		<p>
-			<img src={rigoImage} />
-		</p>
-		<a href="#" className="btn btn-success">
-			If you see this green button, bootstrap is working
-		</a>
-	</div>
-);
+
+export const Home = () => {
+	const [agendaName, setAgendaName] = useState([]);
+	const { actions } = useContext(Context);
+	const navigate = useNavigate();
+
+
+	useEffect(() => {
+	}, []);
+
+	const goToAgendaList = () => {
+		actions.setAgenda(agendaName);
+		setAgendaName('');
+		navigate('/home')
+	}
+
+	const deleteAgenda = () => {
+		const agendaToDelete = prompt('Enter Agenda Name/Slug to be deleted: ')
+		if (agendaToDelete === null) {
+			return;
+		}
+		actions.deleteAgenda(agendaToDelete);
+	}
+
+	return (<>
+		<div className="text-center mt-5 bg-light d-flex flex-column justify-content-between align-items-center">
+			<h1 className='text-dark'>Contact App</h1>
+			<div className="d-flex flex-column justify-content-between align-items-center">
+				<form className="d-flex flex-column justify-content-between align-items-center" onSubmit={goToAgendaList}>
+					<label className='text-dark m-3' htmlFor='agenda'>Enter agenda Name: <input type='text' id='agenda' required minLength='1' onChange={(event) => { setAgendaName(event.target.value) }}></input></label>
+					<button type="submit" className="btn btn-primary fw-bold">
+						Go to the list
+					</button>
+				</form>
+				<button type='button' className="btn btn-danger" onClick={deleteAgenda}>Delete An Agenda</button>
+			</div>
+		</div>
+	</>);
+}
